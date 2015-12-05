@@ -37,7 +37,7 @@ while ~isDone(dsp_obj_file)
   activation
   trigger
   toc
-  
+
   % active or inactive?
 
 end

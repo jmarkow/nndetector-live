@@ -2,7 +2,7 @@ function NETWORK=nndetector_live_convert_net(NET)
 % take MATLAB network structure and convert to something easier
 % to work with in a live setting (i.e. boil down to the math)
 %
-%
+% TODO: proper error-checking
 
 spec_params={'win_size','fft_size','fft_time_shift','amp_scaling',...
   'freq_range','freq_range_ds'};
@@ -48,6 +48,15 @@ for i=1:length(NETWORK.layer_weights)
     case 'satlin'
       NETWORK.transfer_function{i}=@(x) satlin(x,NET.layers{i}.transferParam);
   end
+end
+
+switch lower(NET.userdata.amp_scaling)
+  case 'lin'
+      NETWORK.amp_scaling_fun=@(x) x;
+  case 'log'
+      NETWORK.amp_scaling_fun=@(x) log(x);
+  case 'db'
+      NETWORK.amp_scaling_fun=@(x) 20*log10(x);
 end
 
 % finally threshold
