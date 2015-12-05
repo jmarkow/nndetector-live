@@ -10,7 +10,8 @@ fs=44.1e3; % sampling rate
 buffer_size=[]; % maybe fft size?
 data_type=[];
 test_file=[];
-queue_duration=.005; % queue to buffer (for simulation, irrelevant for output)
+queue_duration_output=.005; % queue to buffer (for simulation, irrelevant for output)
+queue_duration_input=.005;
 
 % TODO: queue size, etc.
 
@@ -53,7 +54,7 @@ if isempty(net_file)
 end
 
 load(net_file,'net');
-network=nndetector_convert_network(net);
+network=nndetector_live_convert_net(net);
 
 % now assume left channel of audio file is audio data, right channel include the hit points if we're testing
 % otherwise poll live data
@@ -61,7 +62,7 @@ network=nndetector_convert_network(net);
 % set up activation functions, layers, etc.
 
 if strcmp(input_device,'simulate')
-  nndetector_live_simulate(input_device,output_device,dsp_file,fs,buffer_size);
+  nndetector_live_simulate(input_device,output_device,dsp_file,fs,queue_duration_output,network);
 else
   nndetector_live_loop(input_device,output_device,fs,buffer_size);
 end

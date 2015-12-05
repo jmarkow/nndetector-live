@@ -16,9 +16,9 @@ end
 if ~isempty(NET.inputs{1}.processFcns)
     for i=1:length(NET.inputs{1}.processFcns)
       if strcmp(NET.inputs{1}.processFcns{i},'mapminmax')
-        NETWORK.input_normalize=@(x) mapminmax(x,NET.inputs{1}.processSettings{i});
+        NETWORK.input_normalize=@(x) mapminmax(x',NET.inputs{1}.processSettings{i})';
       elseif strcmp(NET.inputs{1}.processFcns{i},'mapstd')
-        NETWORK.input_normalize=@(x) mapstd(x,NET.inputs{1}.processSettings{i});
+        NETWORK.input_normalize=@(x) mapstd(x',NET.inputs{1}.processSettings{i})';
       end
     end
 end

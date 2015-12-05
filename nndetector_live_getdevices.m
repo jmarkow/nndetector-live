@@ -1,4 +1,4 @@
-function [INPUT_DEVICE,OUTPUT_DEVICE,DSP_FILE]=nndetector_live_getdevices(INPUT_DEVICE,OUTPUT_DEVICE,TEST_FILE)
+function [INPUT_DEVICE,OUTPUT_DEVICE,TEST_FILE]=nndetector_live_getdevices(INPUT_DEVICE,OUTPUT_DEVICE,TEST_FILE)
 %
 %
 %
@@ -34,13 +34,14 @@ if isempty(INPUT_DEVICE)
 
   choice=menu('Choose input device',{device_list(inputs).name});
   INPUT_DEVICE=device_list(inputs(choice)).name;
-  DSP_FILE=[];
+  TEST_FILE=[];
 
 elseif strcmp(INPUT_DEVICE,'simulate')
   if isempty(TEST_FILE)
     [test_filename,test_pathname]=uigetfile(pwd);
     TEST_FILE=fullfile(test_pathname,test_filename);
   end
+
 end
 
 if isempty(OUTPUT_DEVICE)
