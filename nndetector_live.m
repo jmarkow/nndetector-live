@@ -41,6 +41,9 @@ for i=1:2:nparams
   end
 end
 
+% TODO: add script to stitch together training data into appropriate wav file for testing
+% (input left channel, triggers on right channel)
+
 disp('Polling audio devices...');
 [input_device,output_device,dsp_file]=...
   nndetector_live_getdevices(input_device,output_device,test_file);
