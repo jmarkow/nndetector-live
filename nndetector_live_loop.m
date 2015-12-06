@@ -59,16 +59,16 @@ while ~isDone(dsp_obj_in)
   % active or inactive?
 
   if trigger
-    outdata=[hit audio_data(:,2)];
+    outdata=[hit hit*0];
   else
-    outdata=[hit*0 audio_data(:,2)];
+    outdata=[hit*0 hit*0];
   end
 
   underrun=step(dsp_obj_out,outdata);
 
   if underrun>0
     fprintf('Output underrun by %d samples\n',underrun);
-  end  
+  end
 
 end
 
