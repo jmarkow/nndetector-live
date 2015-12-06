@@ -24,7 +24,7 @@ outputs=find(cat(1,device_list(:).output));
 
 fprintf('Discovered %i inputs and %i outputs\n',length(inputs),length(outputs));
 
-if isempty(INPUT_DEVICE)
+if isempty(INPUT_DEVICE) | strcmp(INPUT_DEVICE,'test')
 
   % user menu with possible devices
 

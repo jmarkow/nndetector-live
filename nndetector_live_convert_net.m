@@ -8,7 +8,6 @@ spec_params={'win_size','fft_size','fft_time_shift','amp_scaling',...
   'freq_range','freq_range_ds','time_window','time_steps'};
 
 for i=1:length(spec_params)
-  spec_params{i}
   NETWORK.spec_params.(spec_params{i})=NET.userdata.(spec_params{i});
 end
 
@@ -17,12 +16,27 @@ end
 if ~isempty(NET.inputs{1}.processFcns)
     for i=1:length(NET.inputs{1}.processFcns)
       if strcmp(NET.inputs{1}.processFcns{i},'mapminmax')
-        NETWORK.input_normalize=@(x) mapminmax(x',NET.inputs{1}.processSettings{i})';
+        NETWORK.input_normalize=@(x) mapminmax('apply',x,NET.inputs{1}.processSettings{i});
       elseif strcmp(NET.inputs{1}.processFcns{i},'mapstd')
-        NETWORK.input_normalize=@(x) mapstd(x',NET.inputs{1}.processSettings{i})';
+        NETWORK.input_normalize=@(x) mapstd('apply',x,NET.inputs{1}.processSettings{i});
       end
     end
+else
+  NETWORK.input_normalize=@(x) x;
 end
+
+if ~isempty(NET.outputs{end}.processFcns)
+    for i=1:length(NET.outputs{end}.processFcns)
+      if strcmp(NET.outputs{end}.processFcns{i},'mapminmax')
+        NETWORK.output_normalize=@(x) mapminmax('reverse',x,NET.outputs{end}.processSettings{i});
+      elseif strcmp(NET.outputs{end}.processFcns{i},'mapstd')
+        NETWORK.output_normalize=@(x) mapstd('reverse',x,NET.outputs{end}.processSettings{i});
+      end
+    end
+else
+  NETWORK.output_normalize=@(x) x;
+end
+
 
 % setup weights
 

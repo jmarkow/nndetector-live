@@ -1,19 +1,22 @@
-function nndetector_live_simulate(INPUT_DEVICE,OUTPUT_DEVICE,TEST_FILE,FS,QUEUE_SIZE_INPUT,...
+function nndetector_live_loop_test(INPUT_DEVICE,OUTPUT_DEVICE,FS,QUEUE_SIZE_INPUT,...
   QUEUE_SIZE_OUTPUT,BUFFER_SIZE_INPUT,BUFFER_SIZE_OUTPUT,NETWORK)
 % standard simulation setup, nothing connected to line in,
 % put out detector and actual hits on left/right channels for line out
 
-fprintf('Loading file: %s\n',TEST_FILE)
-
 NETWORK.spec_params.win_overlap=NETWORK.spec_params.win_size-NETWORK.spec_params.fft_time_shift;
 ring_buffer_size=...
-  NETWORK.spec_params.win_size+(NETWORK.spec_params.fft_time_shift*NETWORK.spec_params.time_steps-1);
+NETWORK.spec_params.win_size+(NETWORK.spec_params.fft_time_shift*NETWORK.spec_params.time_steps-1);
 
 % how long does it take to process?, read in this many samples per cycle
 
 samples_per_frame=round(BUFFER_SIZE_INPUT*FS);
 
-dsp_obj_file=dsp.AudioFileReader(TEST_FILE,'SamplesPerFrame',samples_per_frame); % for now assume left channel is audio data
+%dsp_obj_file=dsp.AudioFileReader(TEST_FILE,'SamplesPerFrame',samples_per_frame); % for now assume left channel is audio data
+
+fprintf('Setting up AudioRecorder on %s\n',INPUT_DEVICE);
+dsp_obj_in=dsp.AudioRecorder('SampleRate',FS,'DeviceName',INPUT_DEVICE,'QueueDuration',QUEUE_SIZE_INPUT,...
+  'OutputNumOverrunSamples',true,'SamplesPerFrame',samples_per_frame,'BufferSizeSource','Property',...
+  'BufferSize',samples_per_frame);
 
 fprintf('Setting up AudioPlayer on %s\n',OUTPUT_DEVICE);
 dsp_obj_out=dsp.AudioPlayer('SampleRate',FS,'DeviceName',OUTPUT_DEVICE,'QueueDuration',QUEUE_SIZE_OUTPUT,...
@@ -31,9 +34,13 @@ layer0_size=size(NETWORK.layer_weights{1},2);
 hit=ones(samples_per_frame,1);
 ringbuffer=zeros(ring_buffer_size,1);
 
-while ~isDone(dsp_obj_file)
+while ~isDone(dsp_obj_in)
 
-  audio_data=step(dsp_obj_file);
+  [audio_data,noverrun]=step(dsp_obj_in);
+
+  if noverrun>0
+    fprintf('Input overrun by %d samples\n',noverrun);
+  end
 
   ringbuffer=[ ringbuffer(samples_per_frame+1:ring_buffer_size);audio_data(:,1) ];
   s=spectrogram(ringbuffer,NETWORK.spec_params.win_size,NETWORK.spec_params.win_overlap,NETWORK.spec_params.fft_size);
