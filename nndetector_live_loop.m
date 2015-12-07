@@ -58,12 +58,7 @@ while ~isDone(dsp_obj_in)
 
   % active or inactive?
 
-  if trigger
-    outdata=[hit hit*0];
-  else
-    outdata=[hit*0 hit*0];
-  end
-
+  outdata=[hit*trigger hit*0];
   underrun=step(dsp_obj_out,outdata);
 
   if underrun>0
