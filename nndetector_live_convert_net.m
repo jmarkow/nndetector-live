@@ -42,7 +42,7 @@ end
 
 [to,from]=find(~cellfun(@isempty,NET.lw));
 NETWORK.layer_weights=cell(1,length(from)+1);
-NETWORK.layer_weights{i}=NET.IW{1,1};
+NETWORK.layer_weights{1}=NET.IW{1,1};
 
 for i=1:length(from)
   NETWORK.layer_weights{i+1}=NET.lw{to(i),from(i)};
