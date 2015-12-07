@@ -17,7 +17,7 @@ dsp_obj_file=dsp.AudioFileReader(TEST_FILE,'SamplesPerFrame',samples_per_frame);
 
 fprintf('Setting up AudioPlayer on %s\n',OUTPUT_DEVICE);
 dsp_obj_out=dsp.AudioPlayer('SampleRate',FS,'DeviceName',OUTPUT_DEVICE,'QueueDuration',QUEUE_SIZE_OUTPUT,...
-  'OutputNumUnderrunSamples',true);
+  'OutputNumUnderrunSamples',true,'BufferSizeSource','Property','BufferSize',samples_per_frame);
 
 % while condition, step through, process data, etc.
 
@@ -51,15 +51,15 @@ while ~isDone(dsp_obj_file)
 
   % active or inactive?
 
-  if trigger
-    outdata=[hit audio_data(:,2)];
-  else
-    outdata=[hit*0 audio_data(:,2)];
+  outdata=[hit*trigger audio_data(:,2)];
+  underrun=step(dsp_obj_out,outdata);
+
+  if underrun>0
+    fprintf('Output underrun: %d\n',underrun);
   end
 
-  underrun=step(dsp_obj_out,outdata);
-  toc
-  
+  toc;
+
 end
 
 

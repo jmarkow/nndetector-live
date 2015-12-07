@@ -16,7 +16,7 @@ samples_per_frame=round(BUFFER_SIZE_INPUT*FS);
 fprintf('Setting up AudioRecorder on %s\n',INPUT_DEVICE);
 dsp_obj_in=dsp.AudioRecorder('SampleRate',FS,'DeviceName',INPUT_DEVICE,'QueueDuration',QUEUE_SIZE_INPUT,...
   'OutputNumOverrunSamples',true,'SamplesPerFrame',samples_per_frame,'BufferSizeSource','Property',...
-  'BufferSize',samples_per_frame);
+  'BufferSize',samples_per_frame,'NumChannels',1);
 
 fprintf('Setting up AudioPlayer on %s\n',OUTPUT_DEVICE);
 dsp_obj_out=dsp.AudioPlayer('SampleRate',FS,'DeviceName',OUTPUT_DEVICE,'QueueDuration',QUEUE_SIZE_OUTPUT,...
@@ -33,13 +33,17 @@ layer0_size=size(NETWORK.layer_weights{1},2);
 
 hit=ones(round(BUFFER_SIZE_OUTPUT*FS),1);
 ringbuffer=zeros(ring_buffer_size,1);
-
-BUFFER_SIZE_OUTPUT
-size(hit)
+trigger=0;
 
 while ~isDone(dsp_obj_in)
 
+  outdata=hit*trigger;
   [audio_data,noverrun]=step(dsp_obj_in);
+  underrun=step(dsp_obj_out,outdata);
+
+  if underrun>0
+    fprintf('Output underrun by %d samples\n',underrun);
+  end
 
   if noverrun>0
     fprintf('Input overrun by %d samples\n',noverrun);
@@ -58,15 +62,6 @@ while ~isDone(dsp_obj_in)
   % flow activation
 
   [activation,trigger]=nndetector_live_sim_network(s,NETWORK);
-
-  % active or inactive?
-
-  outdata=[hit*trigger hit*0];
-  underrun=step(dsp_obj_out,outdata);
-
-  if underrun>0
-    fprintf('Output underrun by %d samples\n',underrun);
-  end
 
 end
 
