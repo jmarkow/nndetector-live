@@ -35,6 +35,10 @@ for i=1:2:nparams
       buffer_size_input=varargin{i+1};
     case 'buffer_size_output'
       buffer_size_output=varargin{i+1};
+      case 'queue_duration_inpout'
+          queue_duration_input=varargin{i+1};
+      case 'queue_duration_output'
+          queue_duration_output=varargin{i+1};
     case 'data_type'
       data_type=varargin{i+1};
     case 'test_file'

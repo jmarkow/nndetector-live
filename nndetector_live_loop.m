@@ -34,6 +34,9 @@ layer0_size=size(NETWORK.layer_weights{1},2);
 hit=ones(round(BUFFER_SIZE_OUTPUT*FS),1);
 ringbuffer=zeros(ring_buffer_size,1);
 
+BUFFER_SIZE_OUTPUT
+size(hit)
+
 while ~isDone(dsp_obj_in)
 
   [audio_data,noverrun]=step(dsp_obj_in);
@@ -62,7 +65,7 @@ while ~isDone(dsp_obj_in)
   underrun=step(dsp_obj_out,outdata);
 
   if underrun>0
-    %fprintf('Output underrun by %d samples\n',underrun);
+    fprintf('Output underrun by %d samples\n',underrun);
   end
 
 end
