@@ -5,7 +5,7 @@ function nndetector_live_loop_test(INPUT_DEVICE,OUTPUT_DEVICE,FS,QUEUE_SIZE_INPU
 
 NETWORK.spec_params.win_overlap=NETWORK.spec_params.win_size-NETWORK.spec_params.fft_time_shift;
 ring_buffer_size=...
-NETWORK.spec_params.win_size+(NETWORK.spec_params.fft_time_shift*NETWORK.spec_params.time_steps-1);
+NETWORK.spec_params.win_size+(NETWORK.spec_params.fft_time_shift*NETWORK.spec_params.time_window_steps-1);
 
 % how long does it take to process?, read in this many samples per cycle
 

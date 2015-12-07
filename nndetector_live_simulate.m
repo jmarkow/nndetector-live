@@ -7,7 +7,7 @@ fprintf('Loading file: %s\n',TEST_FILE)
 
 NETWORK.spec_params.win_overlap=NETWORK.spec_params.win_size-NETWORK.spec_params.fft_time_shift;
 ring_buffer_size=...
-  NETWORK.spec_params.win_size+(NETWORK.spec_params.fft_time_shift*NETWORK.spec_params.time_steps-1);
+  NETWORK.spec_params.win_size+(NETWORK.spec_params.fft_time_shift*NETWORK.spec_params.time_window_steps-1);
 
 % how long does it take to process?, read in this many samples per cycle
 
@@ -34,7 +34,7 @@ ringbuffer=zeros(ring_buffer_size,1);
 while ~isDone(dsp_obj_file)
 
   audio_data=step(dsp_obj_file);
-
+  tic;
   ringbuffer=[ ringbuffer(samples_per_frame+1:ring_buffer_size);audio_data(:,1) ];
   s=spectrogram(ringbuffer,NETWORK.spec_params.win_size,NETWORK.spec_params.win_overlap,NETWORK.spec_params.fft_size);
 
@@ -58,7 +58,8 @@ while ~isDone(dsp_obj_file)
   end
 
   underrun=step(dsp_obj_out,outdata);
-
+  toc
+  
 end
 
 

@@ -5,7 +5,7 @@ function NETWORK=nndetector_live_convert_net(NET)
 % TODO: proper error-checking
 
 spec_params={'win_size','fft_size','fft_time_shift','amp_scaling',...
-  'freq_range','freq_range_ds','time_window','time_steps'};
+  'freq_range','freq_range_ds','time_window','time_window_steps'};
 
 for i=1:length(spec_params)
   NETWORK.spec_params.(spec_params{i})=NET.userdata.(spec_params{i});
@@ -76,4 +76,4 @@ end
 
 % finally threshold
 
-NETWORK.threshold=NET.userdata.threshold;
+NETWORK.threshold=NET.userdata.trigger_thresholds;
