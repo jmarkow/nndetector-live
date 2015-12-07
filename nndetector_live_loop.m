@@ -62,7 +62,7 @@ while ~isDone(dsp_obj_in)
   underrun=step(dsp_obj_out,outdata);
 
   if underrun>0
-    fprintf('Output underrun by %d samples\n',underrun);
+    %fprintf('Output underrun by %d samples\n',underrun);
   end
 
 end
