@@ -37,9 +37,9 @@ trigger=0;
 
 while ~isDone(dsp_obj_in)
 
-  outdata=hit*trigger;
-  [audio_data,noverrun]=step(dsp_obj_in);
+  outdata=hit*trigger;  
   underrun=step(dsp_obj_out,outdata);
+  [audio_data,noverrun]=step(dsp_obj_in);
 
   if underrun>0
     fprintf('Output underrun by %d samples\n',underrun);
