@@ -5,7 +5,7 @@ function nndetector_live_loop_test(INPUT_DEVICE,OUTPUT_DEVICE,FS,QUEUE_SIZE_INPU
 
 NETWORK.spec_params.win_overlap=NETWORK.spec_params.win_size-NETWORK.spec_params.fft_time_shift;
 ring_buffer_size=...
-NETWORK.spec_params.win_size+(NETWORK.spec_params.fft_time_shift*NETWORK.spec_params.time_window_steps-1);
+  NETWORK.spec_params.win_size+(NETWORK.spec_params.fft_time_shift*NETWORK.spec_params.time_window_steps-1);
 
 % how long does it take to process?, read in this many samples per cycle
 
@@ -20,7 +20,7 @@ dsp_obj_in=dsp.AudioRecorder('SampleRate',FS,'DeviceName',INPUT_DEVICE,'QueueDur
 
 fprintf('Setting up AudioPlayer on %s\n',OUTPUT_DEVICE);
 dsp_obj_out=dsp.AudioPlayer('SampleRate',FS,'DeviceName',OUTPUT_DEVICE,'QueueDuration',QUEUE_SIZE_OUTPUT,...
-  'OutputNumUnderrunSamples',true);
+  'OutputNumUnderrunSamples',true,'BufferSizeSource','Property','BufferSize',round(BUFFER_SIZE_OUTPUT*FS));
 
 % while condition, step through, process data, etc.
 
@@ -31,7 +31,7 @@ fprintf('Entering file play loop...\n');
 freq_idx=NETWORK.spec_params.freq_range_ds(1):NETWORK.spec_params.freq_range_ds(end);
 layer0_size=size(NETWORK.layer_weights{1},2);
 
-hit=ones(samples_per_frame,1);
+hit=ones(round(BUFFER_SIZE_OUTPUT*FS),1);
 ringbuffer=zeros(ring_buffer_size,1);
 
 while ~isDone(dsp_obj_in)
