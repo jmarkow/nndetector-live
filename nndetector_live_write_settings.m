@@ -5,7 +5,6 @@ function nndetector_live_write_settings(LOGFILE,NETWORK,INPUT_DEVICE,OUTPUT_DEVI
 
 exclude={'spec_params','layer_weights','layer_biases'};
 
-fprintf(LOGFILE,'%s\n%s\n',BOUNDARY,BOUNDARY);
 fprintf(LOGFILE,'Input device: %s\n',INPUT_DEVICE);
 fprintf(LOGFILE,'Output device: %s\n',OUTPUT_DEVICE);
 
@@ -55,5 +54,3 @@ for i=1:length(NETWORK.layer_weights)
   fprintf(LOGFILE,'Layer%i n(units): %i\n',i,nunits);
   fprintf(LOGFILE,'Layer%i n(weights): %i\n',i,nweights);
 end
-
-fprintf(LOGFILE,'%s\n%s\n',BOUNDARY,BOUNDARY);
