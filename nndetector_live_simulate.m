@@ -30,25 +30,26 @@ layer0_size=size(NETWORK.layer_weights{1},2);
 
 hit=ones(samples_per_frame,1);
 ringbuffer=zeros(ring_buffer_size,1);
+[spect_mat,spect_map,win_mult,fft_idx]=nndetector_live_prep_spectrogram(ring_buffer_size,...
+  NETWORK.spec_params.win_size,NETWORK.spec_params.win_overlap,NETWORK.spec_params.fft_size);
 
 while ~isDone(dsp_obj_file)
 
   audio_data=step(dsp_obj_file);
   ringbuffer=[ ringbuffer(samples_per_frame+1:ring_buffer_size);audio_data(:,1) ];
   tic;
-  s=spectrogram(ringbuffer,NETWORK.spec_params.win_size,NETWORK.spec_params.win_overlap,NETWORK.spec_params.fft_size);
-  toc
+
+  %s=spectrogram(ringbuffer,NETWORK.spec_params.win_size,NETWORK.spec_params.win_overlap,NETWORK.spec_params.fft_size);
+  % shape and compute fft without spectrogram fluff
+  s=fft(ringbuffer(spect_map).*win_mult);
   % scale spectrogram
 
-  tic;
   s=abs(s(freq_idx,:));
   s=NETWORK.amp_scaling_fun(s);
   s=reshape(s,layer0_size,1);
   s=zscore(s);
-  toc
   % flow activation
 
-  tic;
   [activation,trigger]=nndetector_live_sim_network(s,NETWORK);
   toc
   % active or inactive?
