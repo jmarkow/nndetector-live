@@ -15,28 +15,34 @@ end
 
 if ~isempty(NET.inputs{1}.processFcns)
     for i=1:length(NET.inputs{1}.processFcns)
-      if strcmp(NET.inputs{1}.processFcns{i},'mapminmax')
-        NETWORK.input_normalize=@(x) mapminmax('apply',x,NET.inputs{1}.processSettings{i});
-      elseif strcmp(NET.inputs{1}.processFcns{i},'mapstd')
-        NETWORK.input_normalize=@(x) mapstd('apply',x,NET.inputs{1}.processSettings{i});
-      end
+      % if strcmp(NET.inputs{1}.processFcns{i},'mapminmax')
+      %   NETWORK.input_normalize=@(x) mapminmax('apply',x,NET.inputs{1}.processSettings{i});
+      % elseif strcmp(NET.inputs{1}.processFcns{i},'mapstd')
+      %   NETWORK.input_normalize=@(x) mapstd('apply',x,NET.inputs{1}.processSettings{i});
+      % end
+      NETWORK.input_normalize=NET.inputs{1}.processFcns{i};
+      NETWORK.input_normalize_settings=NET.inputs{1}.processSettings{i};
     end
+
 else
-  NETWORK.input_normalize=@(x) x;
+  %NETWORK.input_normalize=@(x) x;
+  NETWORK.input_normalize=[];
 end
 
 if ~isempty(NET.outputs{end}.processFcns)
     for i=1:length(NET.outputs{end}.processFcns)
-      if strcmp(NET.outputs{end}.processFcns{i},'mapminmax')
-        NETWORK.output_normalize=@(x) mapminmax('reverse',x,NET.outputs{end}.processSettings{i});
-      elseif strcmp(NET.outputs{end}.processFcns{i},'mapstd')
-        NETWORK.output_normalize=@(x) mapstd('reverse',x,NET.outputs{end}.processSettings{i});
-      end
+      % if strcmp(NET.outputs{end}.processFcns{i},'mapminmax')
+      %   NETWORK.output_normalize=@(x) mapminmax('reverse',x,NET.outputs{end}.processSettings{i});
+      % elseif strcmp(NET.outputs{end}.processFcns{i},'mapstd')
+      %   NETWORK.output_normalize=@(x) mapstd('reverse',x,NET.outputs{end}.processSettings{i});
+      % end
+      NETWORK.output_normalize=NET.outputs{end}.processFcns{i};
+      NETWORK.output_normalize_settings=NET.outputs{end}.processSettings{i};
     end
 else
-  NETWORK.output_normalize=@(x) x;
+  %NETWORK.output_normalize=@(x) x;
+  NETWORK.output_normalize=[];
 end
-
 
 % setup weights
 
@@ -53,16 +59,17 @@ end
 for i=1:length(NETWORK.layer_weights)
   NETWORK.layer_biases{i}=NET.b{i};
 
-  switch lower(NET.layers{i}.transferFcn)
-    case 'logsig'
-      NETWORK.transfer_function{i}=@(x) logsig(x,NET.layers{i}.transferParam);
-    case 'tansig'
-      NETWORK.transfer_function{i}=@(x) tansig(x,NET.layers{i}.transferParam);
-    case 'purelin'
-      NETWORK.transfer_function{i}=@(x) purelin(x,NET.layers{i}.transferParam);
-    case 'satlin'
-      NETWORK.transfer_function{i}=@(x) satlin(x,NET.layers{i}.transferParam);
-  end
+  % switch lower(NET.layers{i}.transferFcn)
+  %   case 'logsig'
+  %     NETWORK.transfer_function{i}=@(x) logsig(x,NET.layers{i}.transferParam);
+  %   case 'tansig'
+  %     NETWORK.transfer_function{i}=@(x) tansig(x,NET.layers{i}.transferParam);
+  %   case 'purelin'
+  %     NETWORK.transfer_function{i}=@(x) purelin(x,NET.layers{i}.transferParam);
+  %   case 'satlin'
+  %     NETWORK.transfer_function{i}=@(x) satlin(x,NET.layers{i}.transferParam);
+  % end
+  NETWORK.transfer_function{i}=NET.layers{i}.transferFcn;
 end
 
 switch lower(NET.userdata.amp_scaling)

@@ -30,6 +30,8 @@ fprintf('Entering file play loop...\n');
 
 freq_idx=NETWORK.spec_params.freq_range_ds(1):NETWORK.spec_params.freq_range_ds(end);
 layer0_size=size(NETWORK.layer_weights{1},2);
+[spect_mat,spect_map,win_mult,fft_idx]=nndetector_live_prep_spectrogram(ring_buffer_size,...
+  NETWORK.spec_params.win_size,NETWORK.spec_params.win_overlap,NETWORK.spec_params.fft_size);
 
 hit=ones(samples_per_frame,1);
 ringbuffer=zeros(ring_buffer_size,1);
@@ -43,7 +45,8 @@ while ~isDone(dsp_obj_in)
   end
 
   ringbuffer=[ ringbuffer(samples_per_frame+1:ring_buffer_size);audio_data(:,1) ];
-  s=spectrogram(ringbuffer,NETWORK.spec_params.win_size,NETWORK.spec_params.win_overlap,NETWORK.spec_params.fft_size);
+  %s=spectrogram(ringbuffer,NETWORK.spec_params.win_size,NETWORK.spec_params.win_overlap,NETWORK.spec_params.fft_size);
+  s=fft(ringbuffer(spect_map).*win_mult);
 
   % scale spectrogram
 

@@ -11,8 +11,8 @@ data_type=[];
 test_file=[];
 queue_duration_output=0; % queue to buffer (for simulation, irrelevant for output)
 queue_duration_input=0;
-buffer_size_output=.002;
-buffer_size_input=.02;
+buffer_size_output=.01;
+buffer_size_input=.01;
 manual_threshold=[];
 
 % TODO: queue size, etc.
