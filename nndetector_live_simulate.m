@@ -1,5 +1,5 @@
 function nndetector_live_simulate(INPUT_DEVICE,OUTPUT_DEVICE,TEST_FILE,FS,QUEUE_SIZE_INPUT,...
-  QUEUE_SIZE_OUTPUT,BUFFER_SIZE_INPUT,BUFFER_SIZE_OUTPUT,NETWORK)
+  QUEUE_SIZE_OUTPUT,BUFFER_SIZE_INPUT,BUFFER_SIZE_OUTPUT,NETWORK,LOGFILE)
 % standard simulation setup, nothing connected to line in,
 % put out detector and actual hits on left/right channels for line out
 
@@ -45,22 +45,30 @@ while ~isDone(dsp_obj_file)
   % scale spectrogram
 
   s=abs(s(freq_idx,:));
-  s=NETWORK.amp_scaling_fun(s);
+
+  switch lower(NETWORK.spec_params.amp_scaling)
+    case 'db'
+      s=20*log10(s);
+    case 'log'
+      s=log(s);
+  end
+
   s=reshape(s,layer0_size,1);
   s=zscore(s);
+
   % flow activation
 
   [activation,trigger]=nndetector_live_sim_network(s,NETWORK);
   toc
+
   % active or inactive?
 
   outdata=[hit*trigger audio_data(:,2)];
   underrun=step(dsp_obj_out,outdata);
 
   if underrun>0
-    fprintf('Output underrun: %d\n',underrun);
+    fprintf('Output underrun by %d samples (%s)\n',underrun,datestr(now));
   end
-
 
 end
 

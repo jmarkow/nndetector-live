@@ -72,14 +72,14 @@ for i=1:length(NETWORK.layer_weights)
   NETWORK.transfer_function{i}=NET.layers{i}.transferFcn;
 end
 
-switch lower(NET.userdata.amp_scaling)
-  case 'lin'
-      NETWORK.amp_scaling_fun=@(x) x;
-  case 'log'
-      NETWORK.amp_scaling_fun=@(x) log(x);
-  case 'db'
-      NETWORK.amp_scaling_fun=@(x) 20*log10(x);
-end
+% switch lower(NET.userdata.amp_scaling)
+%   case 'lin'
+%       NETWORK.amp_scaling_fun=@(x) x;
+%   case 'log'
+%       NETWORK.amp_scaling_fun=@(x) log(x);
+%   case 'db'
+%       NETWORK.amp_scaling_fun=@(x) 20*log10(x);
+% end
 
 % finally threshold
 

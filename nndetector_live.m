@@ -15,6 +15,7 @@ buffer_size_output=.01;
 buffer_size_input=.01;
 manual_threshold=[];
 log_file='detector_status.log';
+log_boundary=repmat('=',[1 20]);
 
 % TODO: queue size, etc.
 
@@ -84,8 +85,12 @@ end
 
 % set up activation functions, layers, etc.
 
-fid=fopen('logfile','w');
-cleanup_obj=onCleanup(@() nndetector_live_cleanup(fid));
+fid=fopen(log_file,'a');
+fprintf(fid,'%s\n%s\n',log_boundary,log_boundary);
+fprintf(fid,'Started detector at:  %s\n',datestr(now));
+
+cleanup_obj=onCleanup(@() nndetector_live_cleanup(fid,log_boundary));
+nndetector_live_write_settings(fid,network,input_device,output_device,log_boundary);
 
 if strcmp(input_device,'simulate')
   nndetector_live_simulate(input_device_id,output_device_id,dsp_file,fs,queue_duration_input,...
