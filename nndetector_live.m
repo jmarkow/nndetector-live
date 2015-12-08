@@ -14,6 +14,7 @@ queue_duration_input=0;
 buffer_size_output=.002;
 buffer_size_input=.02;
 manual_threshold=[];
+log_file='detector_status.log';
 
 % TODO: queue size, etc.
 
@@ -61,9 +62,13 @@ disp('Polling audio devices...');
 fprintf('Input device: %s\nOutput device: %s\n',input_device,output_device);
 
 disp('Reading in network structure...')
-if isempty(net_file)
+if isempty(net_file) & usejava('desktop')
   [filename,pathname]=uigetfile(pwd);
   net_file=fullfile(pathname,filename);
+elseif isempty(net_file)
+  while isempty(net_file)
+    net_file=input('Enter filename for network:  ','s');
+  end
 end
 
 load(net_file,'net');
@@ -79,15 +84,18 @@ end
 
 % set up activation functions, layers, etc.
 
+fid=fopen('logfile','w');
+cleanup_obj=onCleanup(@() nndetector_live_cleanup(fid));
+
 if strcmp(input_device,'simulate')
   nndetector_live_simulate(input_device_id,output_device_id,dsp_file,fs,queue_duration_input,...
-    queue_duration_output,buffer_size_input,buffer_size_output,network);
+    queue_duration_output,buffer_size_input,buffer_size_output,network,fid);
 elseif strcmp(input_device,'test')
   nndetector_live_loop_test(input_device_id,output_device_id,fs,queue_duration_input,...
-    queue_duration_output,buffer_size_input,buffer_size_output,network);
+    queue_duration_output,buffer_size_input,buffer_size_output,network,fid);
 else
   nndetector_live_loop(input_device_id,output_device_id,fs,queue_duration_input,...
-    queue_duration_output,buffer_size_input,buffer_size_output,network);
+    queue_duration_output,buffer_size_input,buffer_size_output,network,fid);
 end
 
 %%% live neural network based detector
