@@ -24,7 +24,7 @@ dsp_obj_out=dsp.AudioPlayer('SampleRate',FS,'DeviceName',OUTPUT_DEVICE,'QueueDur
 
 % while condition, step through, process data, etc.
 
-fprintf('Entering file play loop...\n');
+fprintf('Entering main detector loop...\n');
 
 % validate frequency and time indices (maybe preflight function?)
 

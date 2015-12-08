@@ -88,6 +88,7 @@ end
 fid=fopen(log_file,'a');
 fprintf(fid,'%s\n%s\n',log_boundary,log_boundary);
 fprintf(fid,'Started detector at:  %s\n',datestr(now));
+fprintf(fid,'Using net file:  %s\n',net_file);
 
 cleanup_obj=onCleanup(@() nndetector_live_cleanup(fid,log_boundary));
 nndetector_live_write_settings(fid,network,input_device,output_device,log_boundary);
