@@ -91,7 +91,7 @@ fprintf(fid,'Started detector at:  %s\n',datestr(now));
 fprintf(fid,'Using net file:  %s\n',net_file);
 
 cleanup_obj=onCleanup(@() nndetector_live_cleanup(fid,log_boundary));
-nndetector_live_write_settings(fid,network,input_device,output_device,log_boundary);
+nndetector_live_write_settings(fid,network,input_device_id,output_device_id,log_boundary);
 
 if strcmp(input_device,'simulate')
   nndetector_live_simulate(input_device_id,output_device_id,dsp_file,fs,queue_duration_input,...
