@@ -40,7 +40,7 @@ for i=1:length(net_parameters)
   else
     if ischar(NETWORK.(net_parameters{i}))
       fprintf(LOGFILE,'%s: %s\n',net_parameters{i},NETWORK.(net_parameters{i}));
-    else
+    elseif ~isstruct(NETWORK.(net_parameters{i}))
       fprintf(LOGFILE,'%s:',net_parameters{i});
       for j=1:length(NETWORK.(net_parameters{i}))
         fprintf(LOGFILE,' %g',NETWORK.(net_parameters{i})(j));
