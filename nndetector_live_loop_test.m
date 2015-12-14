@@ -51,7 +51,6 @@ while ~isDone(dsp_obj_in)
 
   [audio_data,noverrun]=step(dsp_obj_in);
 
-
   if noverrun>0
     fprintf('Input overrun by %d samples (%s)\n',noverrun,datestr(now));
   end
