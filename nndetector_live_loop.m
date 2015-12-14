@@ -1,4 +1,4 @@
-function nndetector_live_loop_test(INPUT_DEVICE,OUTPUT_DEVICE,FS,QUEUE_SIZE_INPUT,...
+function nndetector_live_loop_test(INPUT_DEVICE,INPUT_MAP,OUTPUT_DEVICE,OUTPUT_MAP,FS,QUEUE_SIZE_INPUT,...
   QUEUE_SIZE_OUTPUT,BUFFER_SIZE_INPUT,BUFFER_SIZE_OUTPUT,NETWORK,LOGFILE)
 % standard simulation setup, nothing connected to line in,
 % put out detector and actual hits on left/right channels for line out
@@ -18,9 +18,19 @@ dsp_obj_in=dsp.AudioRecorder('SampleRate',FS,'DeviceName',INPUT_DEVICE,'QueueDur
   'OutputNumOverrunSamples',true,'SamplesPerFrame',samples_per_frame,'BufferSizeSource','Property',...
   'BufferSize',samples_per_frame,'NumChannels',1);
 
+if ~isempty(INPUT_MAP)
+  dsp_obj_in.ChannelMapSource='property';
+  dsp_obj_in.ChannelMap=INPUT_MAP;
+end
+
 fprintf('Setting up AudioPlayer on %s\n',OUTPUT_DEVICE);
 dsp_obj_out=dsp.AudioPlayer('SampleRate',FS,'DeviceName',OUTPUT_DEVICE,'QueueDuration',QUEUE_SIZE_OUTPUT,...
   'OutputNumUnderrunSamples',true,'BufferSizeSource','Property','BufferSize',round(BUFFER_SIZE_OUTPUT*FS));
+
+if ~isempty(OUTPUT_MAP)
+  dsp_obj_out.ChannelMapSource='property';
+  dsp_obj_out.ChannelMap=OUTPUT_MAP;
+end
 
 % while condition, step through, process data, etc.
 

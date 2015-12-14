@@ -16,6 +16,8 @@ buffer_size_input=.01;
 manual_threshold=[];
 log_file='detector_status.log';
 log_boundary=repmat('=',[1 20]);
+input_map=[];
+output_map=[];
 
 % TODO: queue size, etc.
 
@@ -49,6 +51,10 @@ for i=1:2:nparams
       simulate=varargin{i+1};
     case 'manual_threshold'
       manual_threshold=varargin{i+1};
+    case 'input_map'
+      input_map=varargin{i+1};
+    case 'output_map'
+      output_map=varargin{i+1};
     otherwise
   end
 end
@@ -68,7 +74,9 @@ if isempty(net_file) & usejava('desktop')
   net_file=fullfile(pathname,filename);
 elseif isempty(net_file)
   while isempty(net_file)
-    net_file=input('Enter filename for network:  ','s');
+    tmp=dir(fullfile(pwd,'*.mat'));
+    choice=menu('Choose file to load network from:',{tmp(:).name});
+    net_file=fullfile(pwd,tmp(choice).name);
   end
 end
 
@@ -94,14 +102,16 @@ cleanup_obj=onCleanup(@() nndetector_live_cleanup(fid,log_boundary));
 nndetector_live_write_settings(fid,network,input_device_id,output_device_id,log_boundary);
 
 if strcmp(input_device,'simulate')
-  nndetector_live_simulate(input_device_id,output_device_id,dsp_file,fs,queue_duration_input,...
+  nndetector_live_simulate(output_device_id,output_map,dsp_file,fs,queue_duration_input,...
     queue_duration_output,buffer_size_input,buffer_size_output,network,fid);
 elseif strcmp(input_device,'test')
-  nndetector_live_loop_test(input_device_id,output_device_id,fs,queue_duration_input,...
-    queue_duration_output,buffer_size_input,buffer_size_output,network,fid);
+  nndetector_live_loop_test(input_device_id,input_map,output_device_id,output_map,...
+    fs,queue_duration_input,queue_duration_output,buffer_size_input,...
+    buffer_size_output,network,fid);
 else
-  nndetector_live_loop(input_device_id,output_device_id,fs,queue_duration_input,...
-    queue_duration_output,buffer_size_input,buffer_size_output,network,fid);
+  nndetector_live_loop(input_device_id,input_map,output_device_id,output_map,...
+    fs,queue_duration_input,queue_duration_output,buffer_size_input,...
+    buffer_size_output,network,fid);
 end
 
 %%% live neural network based detector

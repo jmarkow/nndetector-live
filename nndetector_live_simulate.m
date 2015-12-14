@@ -1,4 +1,4 @@
-function nndetector_live_simulate(INPUT_DEVICE,OUTPUT_DEVICE,TEST_FILE,FS,QUEUE_SIZE_INPUT,...
+function nndetector_live_simulate(OUTPUT_DEVICE,OUTPUT_MAP,TEST_FILE,FS,QUEUE_SIZE_INPUT,...
   QUEUE_SIZE_OUTPUT,BUFFER_SIZE_INPUT,BUFFER_SIZE_OUTPUT,NETWORK,LOGFILE)
 % standard simulation setup, nothing connected to line in,
 % put out detector and actual hits on left/right channels for line out
@@ -18,6 +18,11 @@ dsp_obj_file=dsp.AudioFileReader(TEST_FILE,'SamplesPerFrame',samples_per_frame);
 fprintf('Setting up AudioPlayer on %s\n',OUTPUT_DEVICE);
 dsp_obj_out=dsp.AudioPlayer('SampleRate',FS,'DeviceName',OUTPUT_DEVICE,'QueueDuration',QUEUE_SIZE_OUTPUT,...
   'OutputNumUnderrunSamples',true');
+
+if ~isempty(OUTPUT_MAP)
+  dsp_obj_out.ChannelMapSource='property';
+  dsp_obj_out.ChannelMap=OUTPUT_MAP;
+end
 
 % while condition, step through, process data, etc.
 
