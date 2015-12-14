@@ -19,8 +19,8 @@ dsp_obj_in=dsp.AudioRecorder('SampleRate',FS,'DeviceName',INPUT_DEVICE,'QueueDur
   'BufferSize',samples_per_frame);
 
 if ~isempty(INPUT_MAP)
-  dsp_obj_in.ChannelMapSource='property';
-  dsp_obj_in.ChannelMap=INPUT_MAP;
+  dsp_obj_in.ChannelMappingSource='property';
+  dsp_obj_in.ChannelMapping=INPUT_MAP;
 end
 
 fprintf('Setting up AudioPlayer on %s\n',OUTPUT_DEVICE);
@@ -28,8 +28,8 @@ dsp_obj_out=dsp.AudioPlayer('SampleRate',FS,'DeviceName',OUTPUT_DEVICE,'QueueDur
   'OutputNumUnderrunSamples',true);
 
 if ~isempty(OUTPUT_MAP)
-  dsp_obj_out.ChannelMapSource='property';
-  dsp_obj_out.ChannelMap=OUTPUT_MAP;
+  dsp_obj_out.ChannelMappingSource='property';
+  dsp_obj_out.ChannelMapping=OUTPUT_MAP;
 end
 
 % while condition, step through, process data, etc.
