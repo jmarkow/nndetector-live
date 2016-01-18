@@ -7,7 +7,6 @@ net_file=[];
 input_device=[];
 output_device=[];
 fs=44.1e3; % sampling rate
-data_type=[];
 test_file=[];
 queue_duration_output=0; % queue to buffer (for simulation, irrelevant for output)
 queue_duration_input=0;
@@ -43,12 +42,8 @@ for i=1:2:nparams
       queue_duration_input=varargin{i+1};
     case 'queue_duration_output'
       queue_duration_output=varargin{i+1};
-    case 'data_type'
-      data_type=varargin{i+1};
     case 'test_file'
       test_file=varargin{i+1};
-    case 'simulate'
-      simulate=varargin{i+1};
     case 'manual_threshold'
       manual_threshold=varargin{i+1};
     case 'input_map'
@@ -69,7 +64,7 @@ disp('Polling audio devices...');
 fprintf('Input device: %s\nOutput device: %s\n',input_device,output_device);
 
 disp('Reading in network structure...')
-if isempty(net_file) & usejava('desktop')
+if isempty(net_file) && usejava('desktop')
   [filename,pathname]=uigetfile(pwd);
   net_file=fullfile(pathname,filename);
 elseif isempty(net_file)
