@@ -7,7 +7,12 @@ NETWORK.spec_params.win_overlap=NETWORK.spec_params.win_size-NETWORK.spec_params
 
 % how long does it take to process?, read in this many samples per cycle
 
-parpool('local', 3);
+% start parallel pool
+p = gcp('nocreate');
+if isempty(p)
+    p = parpool('local', 2);
+end
+
 spmd(2)
     if 1 == labindex
         nndetector_live_spmd_dsp(INPUT_DEVICE,INPUT_MAP,OUTPUT_DEVICE,OUTPUT_MAP,FS,QUEUE_SIZE_INPUT,...
@@ -16,5 +21,5 @@ spmd(2)
         nndetector_live_spmd_proc(NETWORK);
     end
 end
-poolobj = gcp('nocreate');
-delete(poolobj);
+
+delete(p);

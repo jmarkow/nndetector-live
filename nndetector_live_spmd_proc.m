@@ -44,7 +44,7 @@ while true
         end
         
         % append to fft buffer (inefficient)
-        buffer_fft = [buffer_fft s];
+        buffer_fft = [buffer_fft; s];
         
         % remove from audio buffer (really inefficient)
         buffer_audio = buffer_audio((1 + gap + win_size - overlap):end);
@@ -68,7 +68,7 @@ while true
             end
 
             % flow activation
-            [~, act]=nndetector_live_sim_network(in, NETWORK);
+            [~, act]=nndetector_live_sim_network(in(:), NETWORK);
         end
         
         % remove from audio buffer (really inefficient)
@@ -77,6 +77,9 @@ while true
     
     % get audio data
     audio_data = labSendReceive(lab_dsp, lab_dsp, act);
+        
+    % append to audio buffer (inefficient)
+    buffer_audio = [buffer_audio; audio_data];
 end
 
 end
