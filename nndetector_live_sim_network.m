@@ -10,9 +10,9 @@ function [ACTIVATION,TRIGGER]=nndetector_live_sim_network(INPUT,NETWORK)
 if ~isempty(NETWORK.input_normalize)
   switch NETWORK.input_normalize
     case 'mapstd'
-      INPUT=mapstd('apply',INPUT,NETWORK.input_normalize_settings);
+      INPUT=mapstd.apply(INPUT,NETWORK.input_normalize_settings);
     case 'mapminmax'
-      INPUT=mapminmax('apply',INPUT,NETWORK.input_normalize_settings);
+      INPUT=mapminmax.apply(INPUT,NETWORK.input_normalize_settings);
   end
 end
 
@@ -48,9 +48,9 @@ end
 if ~isempty(NETWORK.output_normalize)
   switch NETWORK.output_normalize
     case 'mapstd'
-      ACTIVATION=mapstd('reverse',ACTIVATION,NETWORK.output_normalize_settings);
+      ACTIVATION=mapstd.reverse(ACTIVATION,NETWORK.output_normalize_settings);
     case 'mapminmax'
-      ACTIVATION=mapminmax('reverse',ACTIVATION,NETWORK.output_normalize_settings);
+      ACTIVATION=mapminmax.reverse(ACTIVATION,NETWORK.output_normalize_settings);
   end
 end
 
