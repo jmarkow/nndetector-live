@@ -32,7 +32,7 @@ while true
     while length(buffer_audio) >= win_size
         % calculate FFT
         s = fft(buffer_audio((1 + gap):(win_size + gap)) .* win);
-        
+
         % perform scaling
         s = abs(s(freq_idx));
 
@@ -42,14 +42,14 @@ while true
             case 'log'
                 s=log(s);
         end
-        
+
         % append to fft buffer (inefficient)
         buffer_fft = [buffer_fft; s];
-        
+
         % remove from audio buffer (really inefficient)
         buffer_audio = buffer_audio((1 + gap + win_size - overlap):end);
     end
-    
+
     % has enough fft data
     act = 0;
     while length(buffer_fft) >= layer0_size
@@ -59,10 +59,10 @@ while true
             in = buffer_fft(1:layer0_size);
 
             % perform scaling (normc or zscore)
-            switch NETWORK.spec_params.inp_scaling
-                case 'zscore'
+            switch lower(NETWORK.spec_params.inp_scaling(1))
+                case 'z'
                     in = zscore(in);
-                case 'normc'
+                case 'n'
                     % equivalent of normc for our purposes
                     in = bsxfun(@rdivide, in, sqrt(sum(in .^ 2)));
             end
@@ -70,17 +70,16 @@ while true
             % flow activation
             [~, act]=nndetector_live_sim_network(in(:), NETWORK);
         end
-        
+
         % remove from audio buffer (really inefficient)
         buffer_fft = buffer_fft((1 + length(freq_idx)):end);
     end
-    
+
     % get audio data
     audio_data = labSendReceive(lab_dsp, lab_dsp, act);
-        
+
     % append to audio buffer (inefficient)
     buffer_audio = [buffer_audio; audio_data];
 end
 
 end
-
